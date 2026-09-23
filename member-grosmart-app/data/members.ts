@@ -1,0 +1,96 @@
+import type { MemberProfile } from '@/types/member';
+
+export const DEMO_MEMBERS: Record<string, MemberProfile> = {
+  'GSM-001234': {
+    id: 'mem_001',
+    memberNumber: 'GSM-001234',
+    name: 'Andi Pratama',
+    email: 'andi.pratama@email.com',
+    phone: '+62 812-3456-7890',
+    tier: 'Gold',
+    points: 12450,
+    joinedAt: '2022-03-15',
+    avatarInitials: 'AP',
+    transactions: [
+      {
+        id: 'tx_1',
+        date: '2026-09-20T14:30:00',
+        description: 'Belanja groceries',
+        amount: 320,
+        type: 'earn',
+        store: 'Grosmart Cabang Sudirman',
+      },
+      {
+        id: 'tx_2',
+        date: '2026-09-18T10:15:00',
+        description: 'Tukar poin — voucher Rp50.000',
+        amount: 500,
+        type: 'redeem',
+        store: 'Grosmart App',
+      },
+      {
+        id: 'tx_3',
+        date: '2026-09-15T19:45:00',
+        description: 'Belanja weekend',
+        amount: 780,
+        type: 'earn',
+        store: 'Grosmart Cabang Kemang',
+      },
+      {
+        id: 'tx_4',
+        date: '2026-09-10T08:00:00',
+        description: 'Bonus ulang tahun member',
+        amount: 1000,
+        type: 'earn',
+        store: 'Grosmart',
+      },
+      {
+        id: 'tx_5',
+        date: '2026-09-05T16:20:00',
+        description: 'Belanja harian',
+        amount: 150,
+        type: 'earn',
+        store: 'Grosmart Cabang Sudirman',
+      },
+    ],
+  },
+  'GSM-005678': {
+    id: 'mem_002',
+    memberNumber: 'GSM-005678',
+    name: 'Siti Rahayu',
+    email: 'siti.rahayu@email.com',
+    phone: '+62 813-9876-5432',
+    tier: 'Silver',
+    points: 3200,
+    joinedAt: '2024-01-08',
+    avatarInitials: 'SR',
+    transactions: [
+      {
+        id: 'tx_6',
+        date: '2026-09-21T11:00:00',
+        description: 'Belanja sayur & buah',
+        amount: 210,
+        type: 'earn',
+        store: 'Grosmart Cabang BSD',
+      },
+      {
+        id: 'tx_7',
+        date: '2026-09-14T17:30:00',
+        description: 'Tukar poin — minuman gratis',
+        amount: 200,
+        type: 'redeem',
+        store: 'Grosmart App',
+      },
+      {
+        id: 'tx_8',
+        date: '2026-09-08T09:45:00',
+        description: 'Belanja bulanan',
+        amount: 450,
+        type: 'earn',
+        store: 'Grosmart Cabang BSD',
+      },
+    ],
+  },
+};
+
+export const DEMO_MEMBER_HINT = 'GSM-001234 atau GSM-005678';
