@@ -41,7 +41,7 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.container}>
           <View style={styles.hero}>
-            <Text style={styles.logo}>Grosmart</Text>
+            <Text style={styles.logo}>GrosMart</Text>
             <Text style={styles.subtitle}>Member Card — cek poin kapan saja</Text>
           </View>
 

@@ -17,9 +17,10 @@ export default function CardScreen() {
   const progress = Math.min(member.points / nextRewardAt, 1);
 
   return (
-    <SafeAreaView style={styles.safe} edges={['left', 'right']}>
+    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
       <ScrollView
         contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
@@ -29,9 +30,9 @@ export default function CardScreen() {
           />
         }>
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerText}>
             <Text style={styles.greeting}>Halo, {member.name.split(' ')[0]}!</Text>
-            <Text style={styles.subtitle}>Kartu member digital Anda</Text>
+            <Text style={styles.subtitle}>Kartu member digital GrosMart</Text>
           </View>
           <Link href="/modal" style={styles.infoLink}>
             <Text style={styles.infoLinkText}>Info</Text>
@@ -39,6 +40,18 @@ export default function CardScreen() {
         </View>
 
         <MemberCard member={member} />
+
+        <View style={styles.quickStats}>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Saldo poin</Text>
+            <Text style={styles.statValue}>{formatPoints(member.points)}</Text>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Tier</Text>
+            <Text style={styles.statValue}>{member.tier}</Text>
+          </View>
+        </View>
 
         <View style={styles.progressCard}>
           <Text style={styles.progressTitle}>Menuju voucher Rp150.000</Text>
@@ -59,63 +72,98 @@ export default function CardScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: Brand.surface,
+    backgroundColor: '#EFEFEF',
   },
   content: {
-    padding: 20,
-    paddingBottom: 32,
-    gap: 20,
+    paddingHorizontal: 16,
+    paddingBottom: 28,
+    gap: 18,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    gap: 12,
+    paddingTop: 4,
+  },
+  headerText: {
+    flex: 1,
   },
   greeting: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
-    color: '#1A2420',
+    color: '#1A1A1A',
   },
   subtitle: {
     fontSize: 14,
     color: Brand.textMuted,
     marginTop: 4,
+    lineHeight: 20,
   },
   infoLink: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    minHeight: 44,
+    justifyContent: 'center',
     borderRadius: 999,
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#E2E8E5',
+    borderColor: '#E2E2E2',
   },
   infoLinkText: {
     color: Brand.primary,
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: 13,
+  },
+  quickStats: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: '#ECECEC',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: Brand.textMuted,
+  },
+  statValue: {
+    marginTop: 6,
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1A1A1A',
   },
   progressCard: {
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8E5',
+    borderColor: '#E8E8E8',
   },
   progressTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1A2420',
+    color: '#1A1A1A',
     marginBottom: 12,
   },
   progressTrack: {
     height: 10,
-    backgroundColor: '#E6F0EB',
+    backgroundColor: '#F3DDE2',
     borderRadius: 999,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: Brand.primaryLight,
+    backgroundColor: Brand.primary,
     borderRadius: 999,
   },
   progressMeta: {
@@ -127,5 +175,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 12,
     color: Brand.textMuted,
+    paddingBottom: 8,
   },
 });

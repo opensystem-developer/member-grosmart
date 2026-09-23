@@ -6,14 +6,14 @@ import { Brand } from '@/constants/theme';
 export default function AboutModal() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Grosmart Member Card</Text>
+      <Text style={styles.title}>GrosMart Member Card</Text>
       <Text style={styles.body}>
         Aplikasi ini dibuat dengan Expo (React Native) sehingga dapat dijalankan di iOS dan
         Android dari satu codebase.
       </Text>
       <View style={styles.box}>
         <Text style={styles.boxTitle}>Fitur</Text>
-        <Text style={styles.item}>• Kartu member digital dengan QR code</Text>
+        <Text style={styles.item}>• Kartu member digital (desain resmi) + barcode 1D</Text>
         <Text style={styles.item}>• Cek saldo poin secara real-time (demo)</Text>
         <Text style={styles.item}>• Riwayat penambahan & penukaran poin</Text>
         <Text style={styles.item}>• Profil member & tier</Text>
