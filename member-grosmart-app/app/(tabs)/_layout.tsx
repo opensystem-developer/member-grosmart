@@ -6,7 +6,9 @@ import { Brand } from '@/constants/theme';
 export default function TabLayout() {
   return (
     <Tabs
-      tabBar={(props) => <BottomTabBar {...props} />}
+      tabBar={({ state, descriptors, navigation }) => (
+        <BottomTabBar state={state} descriptors={descriptors} navigation={navigation} />
+      )}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: Brand.primary,
