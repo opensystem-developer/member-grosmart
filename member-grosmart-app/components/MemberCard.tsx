@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import MemberBarcode from '@/components/MemberBarcode';
-import { Brand, formatPoints } from '@/constants/theme';
+import { Brand } from '@/constants/theme';
 import type { Member } from '@/types/member';
 
 const CARD_ASPECT = 1.586;
