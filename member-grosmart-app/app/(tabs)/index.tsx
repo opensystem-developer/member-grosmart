@@ -32,7 +32,7 @@ export default function CardScreen() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <Text style={styles.greeting}>Halo, {member.name.split(' ')[0]}!</Text>
-            <Text style={styles.subtitle}>Kartu member digital GrosMart</Text>
+            <Text style={styles.subtitle}>Depan & belakang kartu dalam satu layar</Text>
           </View>
           <Link href="/modal" style={styles.infoLink}>
             <Text style={styles.infoLinkText}>Info</Text>

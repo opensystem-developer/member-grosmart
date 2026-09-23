@@ -1,13 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import MemberBarcode from '@/components/MemberBarcode';
 import { Brand, formatPoints, tierColor } from '@/constants/theme';
@@ -21,94 +13,107 @@ type Props = {
   compact?: boolean;
 };
 
-export default function MemberCard({ member, compact = false }: Props) {
-  const { width: screenWidth } = useWindowDimensions();
-  const cardWidth = Math.min(screenWidth - (compact ? 48 : HORIZONTAL_GUTTER), 420);
-  const cardHeight = cardWidth / CARD_ASPECT;
-  const tier = tierColor(member.tier);
-  const [isBack, setIsBack] = useState(false);
+type CardFaceProps = {
+  member: Member;
+  cardWidth: number;
+  cardHeight: number;
+  compact: boolean;
+};
 
+function CardFront({ member, cardWidth, cardHeight, compact }: CardFaceProps) {
+  const tier = tierColor(member.tier);
+  const radius = compact ? 16 : 20;
+
+  return (
+    <View style={[styles.cardShell, { width: cardWidth, borderRadius: radius }]}>
+      <Image
+        source={require('../assets/images/member-card-front.png')}
+        style={{ width: cardWidth, height: cardHeight, borderRadius: radius }}
+        resizeMode="cover"
+      />
+      <View style={[styles.tierPill, { borderColor: tier }]}>
+        <Text style={[styles.tierText, { color: tier }]}>{member.tier}</Text>
+      </View>
+      <LinearGradient
+        colors={['transparent', 'rgba(0,0,0,0.82)']}
+        style={[
+          styles.footerScrim,
+          {
+            width: cardWidth,
+            borderBottomLeftRadius: radius,
+            borderBottomRightRadius: radius,
+          },
+        ]}>
+        <Text style={styles.memberName} numberOfLines={1}>
+          {member.name}
+        </Text>
+        <Text style={styles.memberNumber}>{member.memberNumber}</Text>
+      </LinearGradient>
+      <View style={styles.pointsBadge}>
+        <Text style={styles.pointsLabel}>Poin</Text>
+        <Text style={styles.pointsValue}>{formatPoints(member.points)}</Text>
+      </View>
+    </View>
+  );
+}
+
+function CardBack({ member, cardWidth, cardHeight, compact }: CardFaceProps) {
+  const radius = compact ? 16 : 20;
   const barcodeMaxWidth = cardWidth * 0.78;
   const stripBottom = cardHeight * 0.055;
   const stripHeight = cardHeight * 0.24;
   const stripHorizontal = cardWidth * 0.06;
 
   return (
+    <View style={[styles.cardShell, { width: cardWidth, borderRadius: radius }]}>
+      <Image
+        source={require('../assets/images/member-card-back.png')}
+        style={{ width: cardWidth, height: cardHeight, borderRadius: radius }}
+        resizeMode="cover"
+      />
+      <View
+        style={[
+          styles.barcodeStrip,
+          {
+            left: stripHorizontal,
+            width: cardWidth - stripHorizontal * 2,
+            height: stripHeight,
+            bottom: stripBottom,
+          },
+        ]}>
+        <MemberBarcode
+          value={member.memberNumber}
+          maxWidth={barcodeMaxWidth}
+          compact={compact}
+          variant="strip"
+        />
+      </View>
+    </View>
+  );
+}
+
+export default function MemberCard({ member, compact = false }: Props) {
+  const { width: screenWidth } = useWindowDimensions();
+  const cardWidth = Math.min(screenWidth - (compact ? 48 : HORIZONTAL_GUTTER), 420);
+  const cardHeight = cardWidth / CARD_ASPECT;
+  const faceProps = { member, cardWidth, cardHeight, compact };
+
+  return (
     <View style={[styles.wrapper, compact && styles.wrapperCompact]}>
-      <Pressable
-        onPress={() => setIsBack((prev) => !prev)}
-        accessibilityRole="button"
-        accessibilityLabel={isBack ? 'Tampilkan depan kartu member' : 'Tampilkan belakang kartu dengan barcode'}
-        style={[styles.cardShell, { width: cardWidth, borderRadius: compact ? 16 : 20 }]}>
-        {isBack ? (
-          <>
-            <Image
-              source={require('../assets/images/member-card-back.png')}
-              style={{ width: cardWidth, height: cardHeight, borderRadius: compact ? 16 : 20 }}
-              resizeMode="cover"
-            />
-            <View
-              style={[
-                styles.barcodeStrip,
-                {
-                  left: stripHorizontal,
-                  width: cardWidth - stripHorizontal * 2,
-                  height: stripHeight,
-                  bottom: stripBottom,
-                },
-              ]}>
-              <MemberBarcode
-                value={member.memberNumber}
-                maxWidth={barcodeMaxWidth}
-                compact={compact}
-                variant="strip"
-              />
-            </View>
-          </>
-        ) : (
-          <>
-            <Image
-              source={require('../assets/images/member-card-front.png')}
-              style={{ width: cardWidth, height: cardHeight, borderRadius: compact ? 16 : 20 }}
-              resizeMode="cover"
-            />
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Depan kartu</Text>
+        <CardFront {...faceProps} />
+      </View>
 
-            <View style={[styles.tierPill, { borderColor: tier }]}>
-              <Text style={[styles.tierText, { color: tier }]}>{member.tier}</Text>
-            </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Belakang kartu · scan barcode</Text>
+        <CardBack {...faceProps} />
+      </View>
 
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.82)']}
-              style={[
-                styles.footerScrim,
-                {
-                  width: cardWidth,
-                  borderBottomLeftRadius: compact ? 16 : 20,
-                  borderBottomRightRadius: compact ? 16 : 20,
-                },
-              ]}>
-              <Text style={styles.memberName} numberOfLines={1}>
-                {member.name}
-              </Text>
-              <Text style={styles.memberNumber}>{member.memberNumber}</Text>
-            </LinearGradient>
-
-            <View style={styles.pointsBadge}>
-              <Text style={styles.pointsLabel}>Poin</Text>
-              <Text style={styles.pointsValue}>{formatPoints(member.points)}</Text>
-            </View>
-          </>
-        )}
-      </Pressable>
-
-      <Pressable onPress={() => setIsBack((prev) => !prev)} style={styles.flipAction}>
-        <Text style={styles.flipText}>
-          {isBack ? 'Lihat depan kartu' : 'Ketuk kartu · Barcode di belakang'}
+      {!compact ? (
+        <Text style={styles.hint}>
+          Tunjukkan bagian belakang (barcode) saat belanja di kasir.
         </Text>
-      </Pressable>
-
-      {!compact && isBack ? (
-        <Text style={styles.hint}>Tunjukkan barcode di kasir untuk menambah atau menggunakan poin.</Text>
       ) : null}
     </View>
   );
@@ -117,10 +122,24 @@ export default function MemberCard({ member, compact = false }: Props) {
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
-    gap: 10,
+    gap: 16,
   },
   wrapperCompact: {
+    gap: 12,
+  },
+  section: {
+    width: '100%',
+    alignItems: 'center',
     gap: 8,
+  },
+  sectionLabel: {
+    alignSelf: 'flex-start',
+    marginLeft: 4,
+    fontSize: 13,
+    fontWeight: '700',
+    color: Brand.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
   },
   cardShell: {
     overflow: 'hidden',
@@ -193,17 +212,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '800',
     marginTop: 2,
-  },
-  flipAction: {
-    minHeight: 44,
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  flipText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: Brand.primary,
-    textAlign: 'center',
   },
   hint: {
     fontSize: 12,
