@@ -6,28 +6,50 @@ import AuthField from '@/components/auth/AuthField';
 import AuthShell from '@/components/auth/AuthShell';
 import PrimaryButton from '@/components/auth/PrimaryButton';
 import { Brand } from '@/constants/theme';
-import { demoLoginPhonesHint, findMemberByPhone } from '@/services/memberStore';
+import { isPhoneRegistered } from '@/services/memberStore';
+import { savePendingRegistration } from '@/services/pendingRegistration';
 import { sendWhatsAppOtp } from '@/services/whatsappOtp';
+import { normalizePhone } from '@/utils/phone';
 
-export default function LoginMemberScreen() {
-  const [phone, setPhone] = useState('081234567890');
+export default function RegisterMemberScreen() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [devCode, setDevCode] = useState<string | null>(null);
 
-  const onSendOtp = async () => {
+  const onRegister = async () => {
     setError(null);
     setDevCode(null);
-    setLoading(true);
 
-    const member = await findMemberByPhone(phone);
-    if (!member) {
-      setLoading(false);
-      setError('Nomor belum terdaftar. Daftar sebagai member baru.');
+    if (!name.trim()) {
+      setError('Nama lengkap wajib diisi.');
+      return;
+    }
+    if (!email.trim() || !email.includes('@')) {
+      setError('Email tidak valid.');
+      return;
+    }
+    if (!normalizePhone(phone)) {
+      setError('Nomor WhatsApp tidak valid.');
       return;
     }
 
-    const otp = await sendWhatsAppOtp(phone, 'login');
+    setLoading(true);
+    if (await isPhoneRegistered(phone)) {
+      setLoading(false);
+      setError('Nomor sudah terdaftar. Gunakan login member lama.');
+      return;
+    }
+
+    await savePendingRegistration({
+      name: name.trim(),
+      email: email.trim(),
+      phone,
+    });
+
+    const otp = await sendWhatsAppOtp(phone, 'register');
     setLoading(false);
 
     if (!otp.ok) {
@@ -40,7 +62,7 @@ export default function LoginMemberScreen() {
     router.push({
       pathname: '/verify-otp',
       params: {
-        purpose: 'login',
+        purpose: 'register',
         phone,
         devCode: otp.devCode ?? '',
       },
@@ -49,15 +71,30 @@ export default function LoginMemberScreen() {
 
   return (
     <AuthShell
-      title="Login Member Lama"
-      subtitle="Masukkan nomor WhatsApp yang terdaftar. Kami kirim kode OTP via WhatsApp.">
+      title="Daftar Member Baru"
+      subtitle="Isi data diri. Verifikasi nomor WhatsApp dengan OTP sebelum kartu member aktif.">
+      <AuthField
+        label="Nama Lengkap"
+        value={name}
+        onChangeText={setName}
+        placeholder="Contoh: Budi Santoso"
+        autoCapitalize="words"
+      />
+      <AuthField
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        placeholder="email@domain.com"
+      />
       <AuthField
         label="Nomor WhatsApp"
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
         placeholder="08xxxxxxxxxx"
-        hint={`Demo: ${demoLoginPhonesHint()}`}
+        hint="OTP pendaftaran dikirim ke nomor ini via WhatsApp."
       />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -65,12 +102,12 @@ export default function LoginMemberScreen() {
         <Text style={styles.devCode}>Demo OTP (tanpa API): {devCode}</Text>
       ) : null}
 
-      <PrimaryButton label="Kirim OTP WhatsApp" onPress={onSendOtp} loading={loading} />
+      <PrimaryButton label="Kirim OTP WhatsApp" onPress={onRegister} loading={loading} />
 
       <View style={styles.links}>
-        <Text style={styles.linkHint}>Belum punya akun?</Text>
-        <Link href="/register" style={styles.link}>
-          Daftar member baru
+        <Text style={styles.linkHint}>Sudah terdaftar?</Text>
+        <Link href="/login" style={styles.link}>
+          Login member lama
         </Link>
       </View>
     </AuthShell>

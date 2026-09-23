@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MemberCard from '@/components/MemberCard';
 import { useMember } from '@/context/MemberContext';
 import { Brand, formatDate, tierColor } from '@/constants/theme';
+import { formatPhoneDisplay } from '@/utils/phone';
 
 export default function ProfileScreen() {
   const { member, logout } = useMember();
@@ -21,7 +22,7 @@ export default function ProfileScreen() {
         style: 'destructive',
         onPress: async () => {
           await logout();
-          router.replace('/login');
+          router.replace('/welcome');
         },
       },
     ]);
@@ -35,7 +36,14 @@ export default function ProfileScreen() {
 
         <View style={styles.details}>
           <DetailRow label="Email" value={member.email} />
-          <DetailRow label="Telepon" value={member.phone} />
+          <DetailRow
+            label="WhatsApp"
+            value={
+              member.phone.startsWith('62')
+                ? formatPhoneDisplay(member.phone)
+                : member.phone
+            }
+          />
           <DetailRow label="Tier" value={member.tier} accent={tierColor(member.tier)} />
           <DetailRow
             label="Bergabung"

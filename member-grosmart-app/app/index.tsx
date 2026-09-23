@@ -16,7 +16,7 @@ export default function Index() {
   }
 
   if (!member) {
-    return <Redirect href="/login" />;
+    return <Redirect href="/welcome" />;
   }
 
   return <Redirect href="/(tabs)" />;

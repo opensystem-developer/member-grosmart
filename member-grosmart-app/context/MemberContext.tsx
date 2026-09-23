@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 
-import { DEMO_MEMBERS } from '@/data/members';
+import { getMemberByNumber } from '@/services/memberStore';
 import type { MemberProfile, PointTransaction } from '@/types/member';
 
 const STORAGE_KEY = '@grosmart/member_number';
@@ -18,7 +18,7 @@ type MemberContextValue = {
   member: MemberProfile | null;
   isLoading: boolean;
   isRefreshing: boolean;
-  login: (memberNumber: string) => Promise<{ ok: boolean; error?: string }>;
+  establishSession: (memberNumber: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshPoints: () => Promise<void>;
   totalEarned: number;
@@ -26,15 +26,6 @@ type MemberContextValue = {
 };
 
 const MemberContext = createContext<MemberContextValue | null>(null);
-
-function cloneMember(number: string): MemberProfile | null {
-  const source = DEMO_MEMBERS[number.trim().toUpperCase()];
-  if (!source) return null;
-  return {
-    ...source,
-    transactions: source.transactions.map((t) => ({ ...t })),
-  };
-}
 
 function computeTotals(transactions: PointTransaction[]) {
   return transactions.reduce(
@@ -58,7 +49,7 @@ export function MemberProvider({ children }: { children: ReactNode }) {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
         if (saved && mounted) {
-          const profile = cloneMember(saved);
+          const profile = await getMemberByNumber(saved);
           if (profile) setMember(profile);
         }
       } finally {
@@ -70,15 +61,14 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const login = useCallback(async (memberNumber: string) => {
+  const establishSession = useCallback(async (memberNumber: string) => {
     const normalized = memberNumber.trim().toUpperCase();
-    const profile = cloneMember(normalized);
+    const profile = await getMemberByNumber(normalized);
     if (!profile) {
-      return { ok: false, error: 'Nomor member tidak ditemukan.' };
+      throw new Error('Member tidak ditemukan.');
     }
     await AsyncStorage.setItem(STORAGE_KEY, normalized);
     setMember(profile);
-    return { ok: true };
   }, []);
 
   const logout = useCallback(async () => {
@@ -90,7 +80,7 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     if (!member) return;
     setIsRefreshing(true);
     await new Promise((r) => setTimeout(r, 800));
-    const fresh = cloneMember(member.memberNumber);
+    const fresh = await getMemberByNumber(member.memberNumber);
     if (fresh) setMember(fresh);
     setIsRefreshing(false);
   }, [member]);
@@ -105,13 +95,13 @@ export function MemberProvider({ children }: { children: ReactNode }) {
       member,
       isLoading,
       isRefreshing,
-      login,
+      establishSession,
       logout,
       refreshPoints,
       totalEarned,
       totalRedeemed,
     }),
-    [member, isLoading, isRefreshing, login, logout, refreshPoints, totalEarned, totalRedeemed],
+    [member, isLoading, isRefreshing, establishSession, logout, refreshPoints, totalEarned, totalRedeemed],
   );
 
   return <MemberContext.Provider value={value}>{children}</MemberContext.Provider>;

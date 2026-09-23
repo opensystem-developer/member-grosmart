@@ -1,6 +1,6 @@
 # member-grosmart
 
-Aplikasi **kartu member Grosmart** untuk mengecek poin — berjalan di **iOS** dan **Android** (React Native + Expo).
+Aplikasi **kartu member GrosMart** untuk mengecek poin — berjalan di **iOS** dan **Android** (React Native + Expo).
 
 ## Lokasi proyek
 
@@ -18,18 +18,31 @@ npm start
 - **iOS:** tekan `i` di terminal Expo, atau `npm run ios` (memerlukan macOS + Xcode), atau instal **Expo Go** di iPhone dan scan QR code.
 - **Web (preview):** `npm run web`
 
-## Akun demo
+## Autentikasi (OTP WhatsApp)
 
-| Nomor member | Nama |
-|--------------|------|
-| `GSM-001234` | Andi Pratama |
-| `GSM-005678` | Siti Rahayu |
+1. **Welcome** — pilih *Login Member Lama* atau *Daftar Member Baru*
+2. Masukkan nomor WhatsApp → OTP dikirim via WhatsApp
+3. **Verifikasi OTP** (6 digit) → masuk ke kartu member
+
+### Demo login (member lama)
+
+| WhatsApp | Member |
+|----------|--------|
+| `081234567890` | Andi Pratama |
+| `081398765432` | Siti Rahayu |
+
+Tanpa backend OTP, kode demo ditampilkan di layar verifikasi (lihat juga log Metro).
+
+### OTP produksi
+
+Set variabel `EXPO_PUBLIC_WHATSAPP_OTP_API_URL` (lihat [`member-grosmart-app/.env.example`](./member-grosmart-app/.env.example)). Backend harus menerima `POST /send-otp` dan mengirim pesan WhatsApp (Fonnte, Wablas, Twilio, Meta Cloud API, dll.).
 
 ## Fitur
 
+- Login member lama & register member baru (OTP WhatsApp)
 - Kartu member digital (gambar depan resmi) + **barcode 1D** (Code 128)
+- Bottom navigation: Kartu, Poin, Profil
 - Saldo poin & progress reward
 - Riwayat transaksi poin
-- Profil member & keluar / ganti akun
 
-Data saat ini masih **demo** (file `member-grosmart-app/data/members.ts`). Untuk produksi, hubungkan ke API backend Grosmart.
+Member baru disimpan lokal (AsyncStorage) untuk demo. Member demo ada di `member-grosmart-app/data/members.ts`.
