@@ -18,7 +18,7 @@ export default function AboutModal() {
         <Text style={styles.item}>• Verifikasi OTP via WhatsApp</Text>
         <Text style={styles.item}>• Cek saldo poin secara real-time (demo)</Text>
         <Text style={styles.item}>• Riwayat penambahan & penukaran poin</Text>
-        <Text style={styles.item}>• Profil member & tier</Text>
+        <Text style={styles.item}>• Profil member</Text>
       </View>
       <Text style={styles.footer}>
         Untuk produksi, sambungkan ke API Grosmart dan ganti data demo di folder data/.

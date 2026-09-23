@@ -13,9 +13,6 @@ export default function CardScreen() {
     return null;
   }
 
-  const nextRewardAt = 15000;
-  const progress = Math.min(member.points / nextRewardAt, 1);
-
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
       <ScrollView
@@ -41,26 +38,9 @@ export default function CardScreen() {
 
         <MemberCard member={member} />
 
-        <View style={styles.quickStats}>
-          <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Saldo poin</Text>
-            <Text style={styles.statValue}>{formatPoints(member.points)}</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Tier</Text>
-            <Text style={styles.statValue}>{member.tier}</Text>
-          </View>
-        </View>
-
-        <View style={styles.progressCard}>
-          <Text style={styles.progressTitle}>Menuju voucher Rp150.000</Text>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
-          </View>
-          <Text style={styles.progressMeta}>
-            {formatPoints(member.points)} / {formatPoints(nextRewardAt)} poin
-          </Text>
+        <View style={styles.pointsCard}>
+          <Text style={styles.statLabel}>Saldo poin</Text>
+          <Text style={styles.statValue}>{formatPoints(member.points)}</Text>
         </View>
 
         <Text style={styles.pullHint}>Tarik ke bawah untuk memperbarui saldo poin</Text>
@@ -115,22 +95,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 13,
   },
-  quickStats: {
-    flexDirection: 'row',
+  pointsCard: {
     backgroundColor: '#fff',
     borderRadius: 16,
     paddingVertical: 16,
+    paddingHorizontal: 18,
     borderWidth: 1,
     borderColor: '#E8E8E8',
-  },
-  statItem: {
-    flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 8,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: '#ECECEC',
   },
   statLabel: {
     fontSize: 12,
@@ -138,38 +110,9 @@ const styles = StyleSheet.create({
   },
   statValue: {
     marginTop: 6,
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '800',
     color: '#1A1A1A',
-  },
-  progressCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E8E8E8',
-  },
-  progressTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1A1A1A',
-    marginBottom: 12,
-  },
-  progressTrack: {
-    height: 10,
-    backgroundColor: '#F3DDE2',
-    borderRadius: 999,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: Brand.primary,
-    borderRadius: 999,
-  },
-  progressMeta: {
-    marginTop: 8,
-    fontSize: 12,
-    color: Brand.textMuted,
   },
   pullHint: {
     textAlign: 'center',

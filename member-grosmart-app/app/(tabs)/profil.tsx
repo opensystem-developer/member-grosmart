@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import MemberCard from '@/components/MemberCard';
 import { useMember } from '@/context/MemberContext';
-import { Brand, formatDate, tierColor } from '@/constants/theme';
+import { Brand, formatDate } from '@/constants/theme';
 import { formatPhoneDisplay } from '@/utils/phone';
 
 export default function ProfileScreen() {
@@ -44,7 +44,6 @@ export default function ProfileScreen() {
                 : member.phone
             }
           />
-          <DetailRow label="Tier" value={member.tier} accent={tierColor(member.tier)} />
           <DetailRow
             label="Bergabung"
             value={formatDate(`${member.joinedAt}T12:00:00`)}

@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import MemberBarcode from '@/components/MemberBarcode';
-import { Brand, formatPoints, tierColor } from '@/constants/theme';
+import { Brand, formatPoints } from '@/constants/theme';
 import type { Member } from '@/types/member';
 
 const CARD_ASPECT = 1.586;
@@ -21,7 +21,6 @@ type CardFaceProps = {
 };
 
 function CardFront({ member, cardWidth, cardHeight, compact }: CardFaceProps) {
-  const tier = tierColor(member.tier);
   const radius = compact ? 16 : 20;
 
   return (
@@ -31,9 +30,6 @@ function CardFront({ member, cardWidth, cardHeight, compact }: CardFaceProps) {
         style={{ width: cardWidth, height: cardHeight, borderRadius: radius }}
         resizeMode="cover"
       />
-      <View style={[styles.tierPill, { borderColor: tier }]}>
-        <Text style={[styles.tierText, { color: tier }]}>{member.tier}</Text>
-      </View>
       <LinearGradient
         colors={['transparent', 'rgba(0,0,0,0.82)']}
         style={[
@@ -155,21 +151,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  tierPill: {
-    position: 'absolute',
-    top: 12,
-    left: 12,
-    borderWidth: 1.5,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-  },
-  tierText: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.3,
   },
   footerScrim: {
     position: 'absolute',
