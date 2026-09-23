@@ -28,8 +28,8 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['left', 'right']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Profil Member</Text>
         <MemberCard member={member} compact />
 
@@ -76,9 +76,11 @@ const styles = StyleSheet.create({
     backgroundColor: Brand.surface,
   },
   content: {
-    padding: 20,
+    paddingHorizontal: 16,
+    paddingTop: 8,
     gap: 20,
     paddingBottom: 32,
+    alignItems: 'stretch',
   },
   title: {
     fontSize: 22,

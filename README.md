@@ -27,7 +27,7 @@ npm start
 
 ## Fitur
 
-- Kartu member digital + QR code
+- Kartu member digital (gambar depan resmi) + **barcode 1D** (Code 128)
 - Saldo poin & progress reward
 - Riwayat transaksi poin
 - Profil member & keluar / ganti akun

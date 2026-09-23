@@ -14,7 +14,7 @@ export default function PointsHistoryScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['left', 'right']}>
+    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
       <FlatList
         data={member.transactions}
         keyExtractor={(item) => item.id}
