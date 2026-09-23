@@ -1,5 +1,13 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useState } from 'react';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import MemberBarcode from '@/components/MemberBarcode';
 import { Brand, formatPoints, tierColor } from '@/constants/theme';
@@ -17,46 +25,90 @@ export default function MemberCard({ member, compact = false }: Props) {
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = Math.min(screenWidth - (compact ? 48 : HORIZONTAL_GUTTER), 420);
   const cardHeight = cardWidth / CARD_ASPECT;
-  const barcodeMaxWidth = cardWidth - 32;
   const tier = tierColor(member.tier);
+  const [isBack, setIsBack] = useState(false);
+
+  const barcodeMaxWidth = cardWidth * 0.78;
+  const stripBottom = cardHeight * 0.055;
+  const stripHeight = cardHeight * 0.24;
+  const stripHorizontal = cardWidth * 0.06;
 
   return (
     <View style={[styles.wrapper, compact && styles.wrapperCompact]}>
-      <View style={[styles.cardShell, { width: cardWidth, borderRadius: compact ? 16 : 20 }]}>
-        <Image
-          source={require('../assets/images/member-card-front.png')}
-          style={{ width: cardWidth, height: cardHeight, borderRadius: compact ? 16 : 20 }}
-          resizeMode="cover"
-          accessible
-          accessibilityLabel="Kartu member GrosMart"
-        />
+      <Pressable
+        onPress={() => setIsBack((prev) => !prev)}
+        accessibilityRole="button"
+        accessibilityLabel={isBack ? 'Tampilkan depan kartu member' : 'Tampilkan belakang kartu dengan barcode'}
+        style={[styles.cardShell, { width: cardWidth, borderRadius: compact ? 16 : 20 }]}>
+        {isBack ? (
+          <>
+            <Image
+              source={require('../assets/images/member-card-back.png')}
+              style={{ width: cardWidth, height: cardHeight, borderRadius: compact ? 16 : 20 }}
+              resizeMode="cover"
+            />
+            <View
+              style={[
+                styles.barcodeStrip,
+                {
+                  left: stripHorizontal,
+                  width: cardWidth - stripHorizontal * 2,
+                  height: stripHeight,
+                  bottom: stripBottom,
+                },
+              ]}>
+              <MemberBarcode
+                value={member.memberNumber}
+                maxWidth={barcodeMaxWidth}
+                compact={compact}
+                variant="strip"
+              />
+            </View>
+          </>
+        ) : (
+          <>
+            <Image
+              source={require('../assets/images/member-card-front.png')}
+              style={{ width: cardWidth, height: cardHeight, borderRadius: compact ? 16 : 20 }}
+              resizeMode="cover"
+            />
 
-        <View style={[styles.tierPill, { borderColor: tier }]}>
-          <Text style={[styles.tierText, { color: tier }]}>{member.tier}</Text>
-        </View>
+            <View style={[styles.tierPill, { borderColor: tier }]}>
+              <Text style={[styles.tierText, { color: tier }]}>{member.tier}</Text>
+            </View>
 
-        <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.82)']}
-          style={[styles.footerScrim, { width: cardWidth, borderBottomLeftRadius: compact ? 16 : 20, borderBottomRightRadius: compact ? 16 : 20 }]}>
-          <Text style={styles.memberName} numberOfLines={1}>
-            {member.name}
-          </Text>
-          <Text style={styles.memberNumber}>{member.memberNumber}</Text>
-        </LinearGradient>
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.82)']}
+              style={[
+                styles.footerScrim,
+                {
+                  width: cardWidth,
+                  borderBottomLeftRadius: compact ? 16 : 20,
+                  borderBottomRightRadius: compact ? 16 : 20,
+                },
+              ]}>
+              <Text style={styles.memberName} numberOfLines={1}>
+                {member.name}
+              </Text>
+              <Text style={styles.memberNumber}>{member.memberNumber}</Text>
+            </LinearGradient>
 
-        <View style={styles.pointsBadge}>
-          <Text style={styles.pointsLabel}>Poin</Text>
-          <Text style={styles.pointsValue}>{formatPoints(member.points)}</Text>
-        </View>
-      </View>
+            <View style={styles.pointsBadge}>
+              <Text style={styles.pointsLabel}>Poin</Text>
+              <Text style={styles.pointsValue}>{formatPoints(member.points)}</Text>
+            </View>
+          </>
+        )}
+      </Pressable>
 
-      {!compact ? (
-        <View style={{ width: cardWidth }}>
-          <MemberBarcode value={member.memberNumber} maxWidth={barcodeMaxWidth} />
-          <Text style={styles.hint}>
-            Tunjukkan barcode saat belanja untuk menambah atau menggunakan poin.
-          </Text>
-        </View>
+      <Pressable onPress={() => setIsBack((prev) => !prev)} style={styles.flipAction}>
+        <Text style={styles.flipText}>
+          {isBack ? 'Lihat depan kartu' : 'Ketuk kartu · Barcode di belakang'}
+        </Text>
+      </Pressable>
+
+      {!compact && isBack ? (
+        <Text style={styles.hint}>Tunjukkan barcode di kasir untuk menambah atau menggunakan poin.</Text>
       ) : null}
     </View>
   );
@@ -65,10 +117,10 @@ export default function MemberCard({ member, compact = false }: Props) {
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
-    gap: 16,
+    gap: 10,
   },
   wrapperCompact: {
-    gap: 12,
+    gap: 8,
   },
   cardShell: {
     overflow: 'hidden',
@@ -79,6 +131,11 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 10,
     backgroundColor: '#1A1A1A',
+  },
+  barcodeStrip: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tierPill: {
     position: 'absolute',
@@ -137,12 +194,22 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     marginTop: 2,
   },
+  flipAction: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+  flipText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: Brand.primary,
+    textAlign: 'center',
+  },
   hint: {
-    marginTop: 10,
     fontSize: 12,
     lineHeight: 18,
     color: Brand.textMuted,
     textAlign: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
   },
 });

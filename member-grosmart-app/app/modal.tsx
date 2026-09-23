@@ -13,7 +13,7 @@ export default function AboutModal() {
       </Text>
       <View style={styles.box}>
         <Text style={styles.boxTitle}>Fitur</Text>
-        <Text style={styles.item}>• Kartu member digital (desain resmi) + barcode 1D</Text>
+        <Text style={styles.item}>• Kartu member depan/belakang (desain resmi) + barcode 1D di belakang</Text>
         <Text style={styles.item}>• Login member lama & daftar member baru</Text>
         <Text style={styles.item}>• Verifikasi OTP via WhatsApp</Text>
         <Text style={styles.item}>• Cek saldo poin secara real-time (demo)</Text>
